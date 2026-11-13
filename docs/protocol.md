@@ -156,8 +156,12 @@ storage: from its own directory on Windows and Linux, and from
 
 On Windows the launcher hashes each file from a handle it opened without
 `FILE_SHARE_WRITE` or `FILE_SHARE_DELETE`, and keeps those handles open
-until the first game's `status` shows `ready` or `ended`; the host has loaded
-the core by then. So the file it checked is the file that runs. On Linux the launcher hashes the host executable from a
+until the host has exited. The host loads the core library again for each
+game it starts, so a handle closed after the first game would leave the next
+game's load unprotected. Holding the handles does not stop the host loading
+the library, and no other program can write, rename or delete the file while
+they are open. So the file it checked is the file that runs. On Linux the
+launcher hashes the host executable from a
 descriptor it opened with `O_CLOEXEC` at a number above 3 (moved there with
 `F_DUPFD_CLOEXEC` if it came out lower, so the `dup2` to descriptor 3 cannot
 replace it), and starts the host through that same
