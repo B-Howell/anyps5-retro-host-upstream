@@ -10,7 +10,11 @@ env:
 
 jobs:
   macos-arm64:
-    runs-on: macos-15
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, macos-15-xlarge, macos-26]
     timeout-minutes: 340
     steps:
       - name: Toolchain
@@ -41,6 +45,6 @@ jobs:
           shasum -a 256 parallel_ps3_libretro.dylib
       - uses: actions/upload-artifact@v4
         with:
-          name: parallel_ps3_libretro-macos-arm64
+          name: parallel_ps3_libretro-${{ matrix.os }}
           path: ps3/parallel_ps3_libretro.dylib
           retention-days: 3
