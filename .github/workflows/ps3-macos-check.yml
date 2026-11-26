@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 env:
-  PS3_COMMIT: 05ca69f1e032bf13520b716367757be0aa7deb3e
+  PS3_COMMIT: b4eab7cd1882084a7942816a53b46fcd8989d3e8
 
 jobs:
   macos-arm64:
@@ -36,6 +36,7 @@ jobs:
         working-directory: ps3
         env:
           ARCH: ${{ matrix.arch }}
+          KEEP_GOING: 1
         run: .ci/build-macos-libretro.sh
       - name: What was built
         working-directory: ps3
