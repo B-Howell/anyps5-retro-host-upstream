@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 env:
-  PS3_COMMIT: 9d333be99482f1cbb0bbe084ca9827850bf99403
+  PS3_COMMIT: 05ca69f1e032bf13520b716367757be0aa7deb3e
 
 jobs:
   macos-arm64:
@@ -14,7 +14,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-15, macos-15-intel]
+        os: [macos-15-intel]
+        arch: [arm64, x86_64]
     timeout-minutes: 340
     steps:
       - name: Toolchain
@@ -26,7 +27,7 @@ jobs:
       - name: Fetch parallel-ps3 at the commit to pin
         run: |
           git init -q ps3
-          git -C ps3 fetch -q --depth 1 https://github.com/libretro-fork/parallel-ps3.git "$PS3_COMMIT"
+          git -C ps3 fetch -q --depth 1 https://github.com/B-Howell/parallel-ps3.git "$PS3_COMMIT"
           git -C ps3 checkout -q FETCH_HEAD
           git -C ps3 log -1 --format='%H %cI %s'
           sed -i '' 's#url = \.\./\.\./#url = https://github.com/#' ps3/.gitmodules
@@ -34,7 +35,7 @@ jobs:
       - name: Build with the repository's own macOS script
         working-directory: ps3
         env:
-          ARCH: arm64
+          ARCH: ${{ matrix.arch }}
         run: .ci/build-macos-libretro.sh
       - name: What was built
         working-directory: ps3
@@ -45,6 +46,6 @@ jobs:
           shasum -a 256 parallel_ps3_libretro.dylib
       - uses: actions/upload-artifact@v4
         with:
-          name: parallel_ps3_libretro-${{ matrix.os }}
+          name: parallel_ps3_libretro-${{ matrix.os }}-${{ matrix.arch }}
           path: ps3/parallel_ps3_libretro.dylib
           retention-days: 3
