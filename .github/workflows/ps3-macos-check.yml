@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 env:
-  PS3_COMMIT: b4eab7cd1882084a7942816a53b46fcd8989d3e8
+  PS3_COMMIT: 4a2c007d4bef6d840f9275fb8471849c3e0584bb
 
 jobs:
   macos-arm64:
